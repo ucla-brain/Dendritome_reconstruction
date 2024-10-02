@@ -1,0 +1,21 @@
+test:
+  stage: test
+  script: 
+    - project_dir=$(pwd)
+    - src_dir="$project_dir"'/src'
+    - git pull origin app2_fix_wrapper:app2_fix_wrapper
+    - echo "copy dependencies to $src_dir"
+    - cp -R "/home/gitlab-runner/mcp3d_ci/3rd_party" "$src_dir"
+    - rm -R ~/mcp3d_ci_build
+    - mkdir -p ~/mcp3d_ci_build
+    - cd ~/mcp3d_ci_build
+    - echo "in building dir $(pwd)"
+    - cmake "$src_dir" -DMPI=TRUE -DCMAKE_BUILD_TYPE=Release -DPYTHON=TRUE
+    - make -j 4
+    - make install
+    - echo "copy test data to $project_dir"
+    - cp -R /home/gitlab-runner/mcp3d_ci/test_data "$project_dir"
+    - ls "$project_dir"'/bin'
+    - cd "$project_dir"'/bin'
+    - ./mcp3d_unit_tests
+    - mpirun -np 4 ./mcp3d_mpi_tests

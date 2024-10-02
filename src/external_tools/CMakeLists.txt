@@ -1,0 +1,3 @@
+include_directories(${PROJECT_SOURCE_DIR}/external_tools)
+add_subdirectory(vaa3d/swc_utility)
+add_subdirectory(vaa3d/neuron_tracing/all_path_pruning2)

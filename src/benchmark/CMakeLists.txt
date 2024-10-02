@@ -1,0 +1,11 @@
+set(CLUSTER_RUNTIME_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cluster_runtime")
+add_executable(conv_thread_number "${CLUSTER_RUNTIME_DIR}/conv_thread_number.cpp")
+target_link_libraries(conv_thread_number ${PROJECT_LINK_LIBS} mcp3d_common mcp3d_image mcp3d_algorithm)
+add_executable(cv_vs_eigen "${CLUSTER_RUNTIME_DIR}/cv_vs_eigen.cpp")
+target_link_libraries(cv_vs_eigen ${PROJECT_LINK_LIBS} mcp3d_main)
+set_target_properties(conv_thread_number cv_vs_eigen PROPERTIES COMPILE_FLAGS "-O3 -DNDEBUG")
+
+set(PROFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/profile")
+set_source_files_properties("${PROFILE_DIR}/profile_write_pyramid.cpp" PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -fopenmp -pthread -frecord-gcc-switches -march=native -Wall -g -pg")
+add_executable(profile_write_pyramid "${PROFILE_DIR}/profile_write_pyramid.cpp")
+target_link_libraries(profile_write_pyramid ${PROJECT_LINK_LIBS} mcp3d_common mcp3d_image mcp3d_algorithm)

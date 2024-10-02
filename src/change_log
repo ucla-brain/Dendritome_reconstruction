@@ -1,0 +1,95 @@
+- use nlohman_json library 3.5.0. previous build used version 3.0.1, please
+  rebuild with utils script: python build_ext_libraries.py nlohman_json
+  the build requires cmake >= 3.8. build_ext_libraries.py will attempt to
+  generate cmake bin location (/usr/local/cmake-3.8.2/bin/cmake). if this
+  path does not exist, system default cmake command is used. if the system
+  default is < 3.8 the build will not succeed    03/19/2019
+- save a single __image_info__.json under image root,
+  instead of one __pyr_level_nn__.json under each pyramid folder  03/27/2019
+- imaris file read and general hdf5 utility functions    03/27/2019
+  only *FusionStitcher.ims files will be read. unstitched tiles are ignored
+- reverse dimension order from xyz(ct) to (tc)zyx   03/27/2019
+  data volumes returned from MImage have axes order zyx
+- automatic z scaling handling in reading operation  03/27/2019
+- properly handle python object returns from MImage instances  03/27/2019
+- expose additional c++ functions in python binding    03/27/2019
+  (only listing selected python binding functions, see pymcp3d.pyx for full
+   changes. pymcp3d.pyx contains the entire python binding API)
+   MImage:
+       SaveImageInfo(self):
+           save image info file. such saved file saves time in ReadChannelInfo call
+       WriteImagePyramids(self, int start_parent_level,
+                          int end_parent_level=999,
+                          bool multi_threading=False,
+                          bool save_image_info=True,
+                          int write_format=UNKNOWN_FORMAT):
+           this function creates image pyramids.
+           first level of input is start_parent_level
+           runs locally, not recommended for large dataset
+       xyz_dims(self, int pyr_level=0):
+           xyz dimensions of image at given level
+       dims(self, int pyr_level=0)
+       n_pyr_infos(self):
+           number of image levels available
+- changed function signatures (only listing selected differences
+                               in python binding)    03/27/2019
+   MImage:
+       ReadChannelInfo(self, string img_root_dir, bool gather_all_channels=True)
+       SelectView(self, MImageBlock global_view, int rl=0,
+                  bool interpret_view_as_local=False, int voxel_type=UNKNOWN):
+       ReadChannelData(self, bool black_background=True, const string& mode=b"verbose")
+       selected_view(self)
+       loaded_view(self)
+- changed function behavior (only listing selected differences
+                             in python binding)      03/27/2019
+  MImage:
+      Data(): if only 1 volume of data (aka single channel) is read,
+              the function no longer returns length 1 list but the array directly
+
+- rebuild hdf5 as serial library. this is required for non-MPI lean build we
+  need for distribution    03/29/2019
+- update README.md     03/29/2019
+- restructure project folder
+  src: all c++ source code
+  python: pure python code
+  test_data: data used by tests
+  bin: executable installation directory
+  lib: library installation directory
+       on linux the library run time path is set with $ORIGIN
+
+- fix error in 3rd party library builds in fix_wrapper branch   5/31/2019
+    - python build_ext_libraries.py all will now only build serial version of hdf5
+    - correct file path issue in boost build
+
+- build app2, resample swc from vaa3d in app2_fix_wrapper branch 5/31/2019
+
+- split in memory insances of MImage into MImageMemory in app2_fix_wrapper
+  branch 6/14/2019
+
+- remove image_info_ as member of MImageView. pass const ref of MImageInfo when
+  needed in app2_fix_wrapper branch 6/14/2019
+
+- classes MChannelInfo and MImageInfo
+
+- remove channel and time selection from MImageBlock
+
+- merge app2_fix_wrapper and main branch
+  add multi-channel support to image library
+  functions including ReadImageInfo, SelectView receive an additional channel
+  argument. for an image with channel directories ["ch1", "ch2", "ch3"], to
+  read channel info for directory "ch3", the channel argument should equal to 2
+  7/12/2019
+
+- class MChannelPyrSlices
+  MChannelPyrInfo has a member MChannelPyrSlices instance
+
+- class MOmeTiffFormat
+
+- build opencv in mcp3d/src/3rd_party  08/08/2019
+
+- relax requirement of pyramid ratio on z axis
+
+- class MVolumeLayout. change constructor of MImage and MImageInfo.
+  change API of MImage::ReadImageInfo     03/27/2020
+
+

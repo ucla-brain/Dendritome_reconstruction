@@ -1,0 +1,10 @@
+# set boost related variables
+set(BOOST_PATH ${3RD_PARTY_PATH}/boost)
+set(BOOST_INCLUDE_PATH ${BOOST_PATH}/include)
+if(NOT EXISTS ${BOOST_INCLUDE_PATH})
+    message(FATAL_ERROR "${BOOST_INCLUDE_PATH} does not exist. ensure boost is built")
+endif()
+set(BOOST_LIBRARY_PATH ${BOOST_PATH}/lib)
+if(NOT EXISTS ${BOOST_LIBRARY_PATH})
+    message(FATAL_ERROR "${BOOST_LIBRARY_PATH} does not exist. ensure boost is built")
+endif()

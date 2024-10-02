@@ -1,0 +1,8 @@
+//
+// Created by muyezhu on 9/11/19.
+//
+
+#ifndef MCP3D_FASTMARCHING_GENERAL_HPP
+#define MCP3D_FASTMARCHING_GENERAL_HPP
+
+#endif //MCP3D_FASTMARCHING_GENERAL_HPP
